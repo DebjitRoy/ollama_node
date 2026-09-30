@@ -1,0 +1,25 @@
+{
+  "name": "genai-ollama-labs",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "config": {
+    "module": "day3"
+  },
+  "scripts": {
+    "build": "tsc --project tsconfig.json",
+    "start": "tsx src/index.ts",
+    "day2": "tsx src/index.ts day2",
+    "day3": "tsx src/index.ts day3",
+    "day4": "tsx src/index.ts day4",
+    "selftest": "tsx src/index.ts --selftest"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  },
+  "dependencies": {
+    "zod": "^3.23.8"
+  }
+}
