@@ -12,6 +12,7 @@
     "day2": "tsx src/index.ts day2",
     "day3": "tsx src/index.ts day3",
     "day4": "tsx src/index.ts day4",
+    "day5": "tsx src/index.ts day5",
     "selftest": "tsx src/index.ts --selftest"
   },
   "devDependencies": {

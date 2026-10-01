@@ -1,12 +1,13 @@
 import { readFile } from "node:fs/promises";
 
-type ModuleName = "day2" | "day3" | "day4";
+type ModuleName = "day2" | "day3" | "day4" | "day5";
 type PackageConfig = { config?: { module?: string } };
 
 const modules: Record<ModuleName, () => Promise<unknown>> = {
   day2: () => import("./day2/index.js"),
   day3: () => import("./day3/index.js"),
   day4: () => import("./day4/index.js"),
+  day5: () => import("./day5/index.js"),
 };
 
 async function main(): Promise<void> {
@@ -15,7 +16,7 @@ async function main(): Promise<void> {
   const requested = args[0] in modules ? args.shift() : packageJson.config?.module;
 
   if (!requested || !(requested in modules)) {
-    console.error(`Unknown module "${requested ?? ""}". Set config.module in package.json to day2, day3, or day4.`);
+    console.error(`Unknown module "${requested ?? ""}". Set config.module in package.json to day2, day3, day4, or day5.`);
     process.exitCode = 1;
     return;
   }
