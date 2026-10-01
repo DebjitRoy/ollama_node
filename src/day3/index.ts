@@ -139,11 +139,11 @@ const TicketSchema = z.object({
 const TicketJsonSchema = {
   type: "object",
   properties: {
-    severity: { type: "string", enum: ["S1", "S2", "S3", "S4"] },
-    queue: { type: "string", enum: ["payments", "logistics", "infra", "legal"] },
-    action: { type: "string", enum: ["assign", "escalate", "monitor"] },
-    owner: { type: "string", pattern: "^[a-z-]+$" },
-    sla_ack_minutes: { type: "integer", minimum: 1 },
+    severity: { type: "string", enum: ["S1", "S2", "S3", "S4"], description: "Severity level of the ticket" },
+    queue: { type: "string", enum: ["payments", "logistics", "infra", "legal"], description: "Queue to which the ticket belongs" },
+    action: { type: "string", enum: ["assign", "escalate", "monitor"], description: "Action to be taken for the ticket" },
+    owner: { type: "string", pattern: "^[a-z-]+$", description: "Owner of the ticket" },
+    sla_ack_minutes: { type: "integer", minimum: 1, description: "SLA acknowledgment time in minutes" },
   },
   required: ["severity", "queue", "action", "owner", "sla_ack_minutes"],
   additionalProperties: false,

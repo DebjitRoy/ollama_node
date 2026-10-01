@@ -36,6 +36,21 @@ const TOOLS = [
       },
     },
   },
+  {
+    type: "function",
+    function: {
+      name: "purchase_gift_card",
+      description: "Purchase a gift card for a customer. The gift card is sent to the email address provided.",
+      parameters: {
+        type: "object",
+        properties: {
+          email: { type: "string", description: "Email address to send the gift card to." },
+          amount: { type: "number", description: "Amount in GBP. Must be positive." },
+        },
+        required: ["email", "amount"],
+      },
+    },
+  }
 ] as const;
 
 const ORDERS: Record<string, { total: number; status: string }> = {
@@ -119,6 +134,16 @@ function validateCall(name: string, args: JsonRecord): string[] {
       }
     }
   }
+  if (name === "purchase_gift_card") {
+      const email = args.email;
+      const amount = args.amount;
+      if (email === undefined || email === null) problems.push("missing email");
+      else if (typeof email !== "string" || !email.includes("@")) problems.push("email is not valid");
+      if (amount === undefined || amount === null) problems.push("missing amount");
+      else if (typeof amount !== "number" || !Number.isFinite(amount)) problems.push("amount is not a finite number");
+      else if (amount <= 0) problems.push(`amount ${amount} is not positive`);
+      
+    }
   return problems;
 }
 
@@ -147,7 +172,7 @@ async function callModel(prompt: string, useTools = true, systemPrompt?: string)
 }
 
 async function showCalls(prompt: string, coerce: boolean): Promise<void> {
-  console.log(`\n  user: "${prompt}"`);
+  
   const { message, error } = await callModel(prompt);
   if (error || !message) {
     console.log(`  [${error ?? "empty model response"}]`);
@@ -155,6 +180,7 @@ async function showCalls(prompt: string, coerce: boolean): Promise<void> {
   }
 
   const calls = message.tool_calls ?? [];
+  console.log(`\n  user: "${prompt}", calls: ${JSON.stringify(calls)}`);
   if (calls.length === 0) {
     console.log(`  no tool call. the model replied in prose:\n    ${(message.content ?? "").slice(0, 180)}`);
     return;
@@ -162,6 +188,7 @@ async function showCalls(prompt: string, coerce: boolean): Promise<void> {
 
   for (const call of calls) {
     const name = call.function.name;
+    console.log(`\n  tool call: ${name}`);
     let rawArgs: unknown = call.function.arguments;
     if (typeof rawArgs === "string") {
       try {
@@ -189,6 +216,7 @@ async function showCalls(prompt: string, coerce: boolean): Promise<void> {
 async function toolsDemo(coerce: boolean): Promise<void> {
   await showCalls("What is the status of order A-4471?", coerce);
   await showCalls("Refund order A-4471 for 40 pounds, they were charged twice.", coerce);
+  await showCalls("Purchase a gift card for john@doe.com of $50.", coerce);
 }
 
 async function badArgs(coerce: boolean): Promise<void> {
